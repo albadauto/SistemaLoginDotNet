@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using SysLogin;
 using SysLogin.Context;
+using SysLogin.Repository;
+using SysLogin.Repository.Interfaces;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,7 +12,6 @@ string connection = builder.Configuration.GetConnectionString("Database");
 var key = Encoding.ASCII.GetBytes(Settings.Secret);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-
 //Configurando autenticação
 builder.Services.AddAuthentication(x =>
 {
@@ -29,6 +30,7 @@ builder.Services.AddAuthentication(x =>
     };
 });
 builder.Services.AddEntityFrameworkSqlServer().AddDbContext<DatabaseContext>(o => o.UseSqlServer(connection));
+builder.Services.AddScoped<ILogin, LoginRepository>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
